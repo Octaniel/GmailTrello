@@ -40,12 +40,22 @@ import com.google.api.services.gmail.model.Thread;
 import io.restassured.path.json.JsonPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GmailtoTrolloService {
     Logger logger = LoggerFactory.getLogger(GmailtoTrolloService.class);
+
+    @Value("trello.token")
+    String tokenTrello;
+
+    @Value("trello.key")
+    String keyTrello;
+
+    @Value("trello.idList")
+    String adListTrello;
 
     private static final String APPLICATION_NAME = "gmailtrello";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
@@ -243,9 +253,9 @@ public class GmailtoTrolloService {
             HttpResponse<String> response;
             try {
                 response = Unirest.post("https://api.trello.com/1/cards")
-                        .queryString("key", "dc76a3e1b0ede348ca8958fbc4c91568")
-                        .queryString("token", "f8f1984e133426051d88252d77e208e02bb42a1292073341e109052426f2fed6")
-                        .queryString("idList", "60b0c81a73675672375feddd")
+                        .queryString("key", keyTrello)
+                        .queryString("token", tokenTrello)
+                        .queryString("idList", adListTrello)
                         .queryString("name", hm.get("subject"))
                         .queryString("desc", hm.get("body"))
                         .asString();
